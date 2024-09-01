@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>photo-cube-1</title>
+    <style>
+        :root {
+            --size: 200px;
+            --depth: 200px;
+            --h-sides: 4;
+            --v-sides: 3;
+            --image-width: calc(var(--h-sides) * var(--size));
+            --image-height: calc(var(--v-sides) * var(--size));
+            --image: url(https://images.unsplash.com/photo-1500964757637-c85e8a162699?q=80&w=1503&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #222;
+            min-height: 100vh;
+            display: grid;
+            place-content: center;
+
+            background: var(--image) 50% 50% / var(--image-width) var(--image-height) no-repeat;
+            transform-style: preserve-3d;
+            perspective: 550px;
+        }
+
+        .cube {
+            width: var(--size);
+            height: var(--size);
+            aspect-ratio: 1/1;
+            transform-style: preserve-3d;
+            position: relative;
+            transform: rotateX(calc(var(--y) * -270deg)) rotateY(calc(var(--x) * 270deg));
+        }
+
+        .cube .side {
+            aspect-ratio: 1/1;
+            background-color: hsla(100, 100%, 50%, .1);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            translate: -50% -50%;
+            background-image: var(--image);
+            background-size: var(--image-width) var(--image-height);
+            background-position: calc(-1 * var(--c) * var(--size)) calc(-1 * var(--r) * var(--size));
+        }
+
+        .cube .side:nth-of-type(1),
+        .cube .side:nth-of-type(2) {
+            --coefficient: 0.5;
+            width: var(--size);
+            height: var(--size);
+            transform: translate3d(0, 0, calc(var(--depth) * var(--coefficient)));
+        }
+
+        .cube .side:nth-of-type(2) {
+            --coefficient: -0.5;
+        }
+
+        .cube .side:nth-of-type(3),
+        .cube .side:nth-of-type(4) {
+            --rotation: -90deg;
+            height: var(--depth);
+            width: var(--size);
+            transform: rotateY(var(--rotation)) translate3d(0, 0, calc(var(--size) * 0.5));
+        }
+
+        .cube .side:nth-of-type(4) {
+            --rotation: 90deg;
+        }
+
+        .cube .side:nth-of-type(5),
+        .cube .side:nth-of-type(6) {
+            --rotation: -90deg;
+            height: var(--depth);
+            width: var(--size);
+            transform: rotateX(var(--rotation)) rotateZ(180deg) scaleX(-1) translate3d(0, 0, calc(var(--size) * -0.5));
+        }
+
+        .cube .side:nth-of-type(6) {
+            --rotation: 90deg;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="cube">
+        <div class="side" style="--r: 1; --c: 1;"></div>
+        <div class="side" style="--r: 1; --c: 3;"></div>
+        <div class="side" style="--r: 1; --c: 0;"></div>
+        <div class="side" style="--r: 1; --c: 2;"></div>
+        <div class="side" style="--r: 0; --c: 1;"></div>
+        <div class="side" style="--r: 2; --c: 1;"></div>
+    </div>
+    <script>
+        onmousemove = (e) => {
+            let { clientX: x, clientY: y } = e;
+            x = (x - (innerWidth / 2)) / innerWidth
+            y = (y - (innerHeight / 2)) / innerHeight
+
+            document.documentElement.style = `--x: ${x};--y: ${y};`
+        }
+    </script>
+</body>
+
+</html>
